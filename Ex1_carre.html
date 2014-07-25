@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exemple 1</title>
+	</head>
+<script>
+//-----------------------
+//Attente du chargement de la page pour éxécuter le code,
+//De plus insérer le code dans une fonction anonyme accélère l'exécution. (Conseil optimisation inside)
+window.onload=function(){
+//-----------------------
+//Récupération du "Contexte"
+	var canvas=document.getElementById('jeu'),
+	context=canvas.getContext('2d');
+//-----------------------
+//Variables du carré
+	var x=250,y=200;//Centre du carré
+	var cote=50,//Taille du carré
+	rotation=1,
+	angle=Math.random()*3.14,
+	vitesse=5;
+	//Variables de vitesse
+	var vx=Math.cos(angle)*vitesse,
+	vy=Math.sin(angle)*vitesse;
+//-----------------------
+//Boucle de l'animation
+	var animation = function(){
+		//-----------------------
+		//On nettoie l'image précedemment tracée
+		context.clearRect(0,0,500,400);
+		//-----------------------
+		//On calcule la nouvelle position et rotation du carré
+		//On incrémente la rotation, l'angle est en radian, on évite l'incrémentation infinie
+		rotation+=0.10;
+		if(rotation>6.28)
+			rotation=0;
+		//On vérifie que le carré se situe toujours dans notre canvas
+		if(x<0+cote/2 || x>500-cote/2){
+			//On change le signe de la vitesse en x, cela simule le rebond sur un bord vertical
+			vx*=-1;
+		}
+		if(y<0+cote/2 || y>400-cote/2){
+			//On change le signe de la vitesse en y, cela simule le rebond sur un bord horizontal
+			vy*=-1;
+		}
+		//Ici on ajoute les différentes vitesses aux coordonnées du carré
+		x+=vx;
+		y+=vy;
+		//-----------------------
+		//On trace le carré à l'aide des outils de modification du repère de canvas
+		//Sans rotation, nous auriont pu utiliser simplement : context.fillRect(x-cote/2,y-cote/2,cote,cote)
+		//On sauvegarde le repère actuel du contexte
+		context.save();
+		//Translation du repère vers le centre du carré
+		context.translate(x,y);
+		//Application de la rotation de notre carré
+		context.rotate(-rotation);//Sens directe avec le moins
+		//Ici on trace le carré !
+		context.fillRect(-cote/2,-cote/2,cote,cote);//On place le centre du carré au centre du nouveau repère, donc le coin à -cote/2
+		//On restaure le contexte précédemment sauvegardé, et voilà une rotation de faite
+		context.restore();
+	};
+//Lancement de l'animation, on demande à JavaScript de relancer la fonction animation toutes les 20ms (si elle n'est pas déjà en cours)
+	setInterval(animation,20);
+}
+</script>
+	<body>
+	<center>
+		<div id="principale">
+			<div id="titre">
+			<h1>Carré animé</h1>
+			</div>
+			<canvas id="jeu" width="500" height="400" style="border:1px solid black;">
+			</canvas>
+			<div id="legende">
+			</div>
+		</div>
+	</center>
+	</body>
+</html>

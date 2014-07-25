@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exemple 4</title>
+	</head>
+<script>
+//On charge la feuille de sprites avant le code
+//Conseil optimisation : pour les mobiles préférez des images en multiple de 2 pour les pixels... 1024x32, 2048x1024, etc.
+var sprite=new Image();
+sprite.src="ressources/images/perso.png";
+
+window.onload=function(){
+	var canvas=document.getElementById('jeu'),
+	context=canvas.getContext('2d');
+	
+	var gauche=false,
+	droite=false, 
+	espace=false,
+	saut=false,
+	pas=0;
+	
+	var largeur=49,
+	hauteur=74;
+	
+	//Gestion du clavier
+	window.onkeydown = function(e){
+		var touche=e.which;
+		if(touche==null)
+			touche=e.keyCode;
+		switch(touche){
+			case 37:
+				gauche=true;
+				break;
+			case 39:
+				droite=true;
+				break;
+			case 32:
+				espace=true;
+				break;
+		}
+	};
+	window.onkeyup = function(e){
+		var touche=e.which;
+		if(touche==null)
+			touche=e.keyCode;
+		switch(touche){
+			case 37:
+				gauche=false;
+				break;
+			case 39:
+				droite=false;
+				break;
+			case 32:
+				espace=false;
+				break;
+		}
+	};
+	
+	var dessin = function(){
+		//Nettoyage de la fenêtre
+		context.clearRect(0,0,500,400);
+		
+		//On calcul le déplacement en cours
+		var vx=0;
+		if(droite)
+			vx+=1;
+		if(gauche)
+			vx-=1;
+		if(espace && saut==false){
+			pas=0;
+			saut=true;
+		}
+		//On calcul l'image à afficher
+		pas+=1
+		if(pas>39){
+			pas=0;
+			if(saut)
+				saut=false;
+		}
+		//On affiche l'image
+		var numImage=Math.floor(pas/4);
+		//On ne s'amusera pas à retourner l'image nous même, car cela augmente le temps entre chaque rafraichissement
+		//Ici la gestion de la direction est assez sommaire
+		/*
+		drawImage, les arguments :
+		L'image source. (img)
+		Coordonnées où est prise l'image sur la souce (sx, sy)
+		La taille prise sur l'image (tx, ty)
+		L'emplacement où est copié l'image (x, y)
+		La taille (réduction/agrandissement) de l'image copiée (l,h)
+		Sachant que comme pour toutes les fonction javascript l'ordre est anarchique :D
+		drawImage(img,x,y);
+		drawImage(img,x,y,l,h);
+		drawImage(img,sx,sy,tx,ty,x,y,l,h);
+		*/
+		if(saut)
+			context.drawImage(sprite,1+(1+largeur)*numImage,1+(1+hauteur)*3,largeur,hauteur,250-largeur,250-hauteur,largeur,hauteur);
+		else if(vx==1)
+			context.drawImage(sprite,1+(1+largeur)*numImage,1+(1+hauteur)*(1-vx),largeur,hauteur,250-largeur,250-hauteur,largeur,hauteur);
+		else if(vx==-1)
+			context.drawImage(sprite,1+(1+largeur)*numImage,1+(1+hauteur)*(1-vx),largeur,hauteur,250-largeur,250-hauteur,largeur,hauteur);
+		else
+			context.drawImage(sprite,1+(1+largeur)*numImage,1+(1+hauteur)*(1-vx),largeur,hauteur,250-largeur,250-hauteur,largeur,hauteur);
+	};
+	setInterval(dessin,20);
+}
+</script>
+	<body>
+	<center>
+		<div id="principale">
+			<div id="titre">
+			<h1>Animation d'un sprite</h1>
+			</div>
+			<canvas id="jeu" width="500" height="400" style="border:1px solid black;">
+			</canvas>
+			<div id="legende">
+			<img src="ressources/images/clavgd.png" /> + <img src="ressources/images/espace.png" /> - Uilisez les flèches gauche, droite et la barre d'espace.
+			</div>
+		</div>
+	</center>
+	</body>
+</html>

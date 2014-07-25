@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exemple 3</title>
+	</head>
+<script>
+window.onload=function(){
+//-----------------------
+	var canvas=document.getElementById('jeu'),
+	context=canvas.getContext('2d');
+//-----------------------
+	var x,new_x,
+	y,new_y,
+	espace=false,
+	clique=false;
+//-----------------------
+	//Gestion de la souris
+	window.onmousemove = function(e){
+		new_x=e.pageX-canvas.offsetLeft;
+		new_y=e.pageY-canvas.offsetTop;
+	}
+	canvas.onmousedown = function(e){
+		clique=true;
+	}
+	window.onmouseup = function(e){
+		clique=false;
+	}
+	//Gestion de la barre espace
+	window.onkeydown = function(e){
+		var touche=e.which;
+		if(touche==null)
+			touche=e.keyCode;
+		if(touche==32)
+			espace=true;
+	};
+	window.onkeyup = function(e){
+		var touche=e.which;
+		if(touche==null)
+			touche=e.keyCode;
+		if(touche==32)
+			espace=false;
+	};
+//-----------------------
+	var dessin = function(){
+		//-----------------------
+		//On nettoit seulement si espace est appuyé
+		if(espace)
+		context.clearRect(0,0,500,400);
+		//-----------------------
+		//On trace si le bouton de la souris est appuyé
+		if(clique){
+			context.beginPath();
+			context.moveTo(x,y);
+			context.lineTo(new_x,new_y);
+			context.closePath();
+			context.stroke();
+		}
+		x=new_x;
+		y=new_y;
+	};
+	setInterval(dessin,20);
+}
+</script>
+	<body>
+	<center>
+		<div id="principale">
+			<div id="titre">
+			<h1>Dessin avec la souris</h1>
+			</div>
+			<canvas id="jeu" width="500" height="400" style="border:1px solid black;">
+			</canvas>
+			<div id="legende">
+			<img src="ressources/images/souris.png" /> + <img src="ressources/images/espace.png" /> - Utilisez la souris et la barre d'espace
+			</div>
+		</div>
+	</center>
+	</body>
+</html>

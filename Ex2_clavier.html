@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exemple 2</title>
+	</head>
+<script>
+window.onload=function(){
+//-----------------------
+	var canvas=document.getElementById('jeu'),
+	context=canvas.getContext('2d');
+//-----------------------
+	var x=250,
+	y=250,
+	rayon=30,
+	angle=2*Math.PI,
+	vitesse_max=5;
+	//Ici sont crées les variables de "déplacement"
+	var haut=false,
+	bas=false,
+	droite=false,
+	gauche=false,
+	vx=0,
+	vy=0;
+//-----------------------
+//On créé la fonction qui gère le clavier
+	//Quand on appuie sur une touche
+	window.onkeydown = function(e){
+		//On récupère la valeur unicode du caractère tapé
+		var touche=e.which;
+		if(touche==null)//En fonction du naviguateur...
+			touche=e.keyCode;
+		if(touche==37)
+			gauche=true;
+		if(touche==38)
+			haut=true;
+		if(touche==39)
+			droite=true;
+		if(touche==40)
+			bas=true;
+	};
+	//Quand on la relache
+	window.onkeyup = function(e){
+		//On récupère la valeur unicode du caractère tapé
+		var touche=e.which;
+		if(touche==null)//En fonction du naviguateur...
+			touche=e.keyCode;
+		if(touche==37)
+			gauche=false;
+		if(touche==38)
+			haut=false;
+		if(touche==39)
+			droite=false;
+		if(touche==40)
+			bas=false;
+	};
+//-----------------------
+	var animation = function(){
+		//-----------------------
+		//On ne nettoie que l'ancien emplacement du cercle
+		context.clearRect(x-rayon-1,y-rayon-1,rayon*2+2,rayon*2+2);
+		//-----------------------
+		//On regarde ce que fait l'interraction du joueur
+		//Ici les gains sont unitaires, pour garder la simplicité
+		if(haut && vy>-vitesse_max)
+			vy--;
+		if(bas && vy<vitesse_max)
+			vy++;
+		if(gauche && vx>-vitesse_max)
+			vx--;
+		if(droite && vx<vitesse_max)
+			vx++;
+		//On vérifie que le cercle ne sort pas de la fenêtre
+		if((x-rayon<0&&vx<0) || (x+rayon>500&&vx>0))
+			vx*=-1;
+		if((y-rayon<0&&vy<0) || (y+rayon>400&&vy>0))
+			vy*=-1;
+		//On applique le mouvement
+			x+=vx;
+			y+=vy;
+			vx*=0.90;
+			vy*=0.90;
+		//-----------------------
+		//On trace le cercle
+		context.beginPath();
+		context.arc(x,y,rayon,0,angle);
+		context.closePath();
+		context.fill();
+		//On effectue la boucle suivante dans 20ms
+		setTimeout(animation,20);
+	};
+//Lancement de l'animation
+	animation();
+}
+</script>
+	<body>
+	<center>
+		<div id="principale">
+			<div id="titre">
+			<h1>Interraction avec le clavier</h1>
+			</div>
+			<canvas id="jeu" width="500" height="400" style="border:1px solid black;">
+			</canvas>
+			<div id="legende">
+			<img src="ressources/images/fleches.png" /> - Utilisez les flèches
+			</div>
+		</div>
+	</center>
+	</body>
+</html>

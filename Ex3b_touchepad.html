@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exemple 3 bis</title>
+	</head>
+<script>
+window.onload=function(){
+	var canvas=document.getElementById('jeu'),
+	context=canvas.getContext('2d');
+	var x,new_x,
+	y,new_y,
+	espace=false,
+	clique=false;
+//-----------------------
+	//Gestion du touchpad android
+	window.addEventListener('touchmove', function(e){
+		e.preventDefault();
+		new_x=e.targetTouches[0].pageX-canvas.offsetLeft;
+		new_y=e.targetTouches[0].pageY-canvas.offsetTop;
+	}, false);
+	window.addEventListener('touchstart', function(e){
+		clique=true;
+	}, false);
+	window.addEventListener('touchend', function(e){
+		clique=false;
+	}, false);
+	//-----------------------
+	window.onmousemove = function(e){
+		new_x=e.pageX-canvas.offsetLeft;
+		new_y=e.pageY-canvas.offsetTop;
+	}
+	canvas.onmousedown = function(e){
+		clique=true;
+	}
+	window.onmouseup = function(e){
+		clique=false;
+	}
+//-----------------------
+	var dessin = function(){
+		if(clique){
+			context.beginPath();
+			context.moveTo(x,y);
+			context.lineTo(new_x,new_y);
+			context.closePath();
+			context.stroke();
+		}
+		x=new_x;
+		y=new_y;
+	};
+	setInterval(dessin,20);
+}
+</script>
+	<body>
+	<center>
+		<div id="principale">
+			<div id="titre">
+			<h1>Dessin avec le touchepad</h1>
+			</div>
+			<canvas id="jeu" width="500" height="400" style="border:1px solid black;">
+			</canvas>
+			<div id="legende">
+			<img src="ressources/images/souris.png" /> - Utilisez la souris ou votre doigt sur Android
+			</div>
+		</div>
+	</center>
+	</body>
+</html>
